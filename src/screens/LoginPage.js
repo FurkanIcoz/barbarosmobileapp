@@ -1,58 +1,92 @@
-import React, { useState } from "react";
-import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import {CustomButton,CustomTextInput} from '../components/index'
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { CustomButton, CustomTextInput, Loading } from "../components/index";
 import { useNavigation } from "@react-navigation/native";
-const LoginPage = ()=>{
+import { useSelector, useDispatch } from "react-redux";
+import { login, autoLogin } from "../redux/userSlice";
 
-    const navigation = useNavigation();
-    const [email,setEmail] = useState('')
-    const [password,setPassword] = useState('') 
-    
-    return(
-        <SafeAreaView style={styles.container}>
+const LoginPage = () => {
+  const { isLoading } = useSelector((state) => state.user);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-            <View style={{flex:2, width:'100%',alignItems:'center',justifyContent:"space-evenly"}}>
-                <Text style={styles.welcome}>Merhaba</Text>
+  useEffect(() => {
+    dispatch(autoLogin());
+  }, []);
 
-                <Image
-                    source={require('../../assets/barbaros.jpg')}
-                    style={styles.logo}
-                />
-            </View>
-            <View style={{flex:3,width:'100%',alignItems:'center'}}>
-                
-            <CustomTextInput
-                title='Email'
-                handlePlaceholder='EMAIL'
-                isSecureText={false}
-                handleOnchangeText= {setEmail}
-                handleValue={email}
-            />
+  const handleLogin = () => {
+    dispatch(login({ email, password }));
+  };
 
-            <CustomTextInput
-                title='Şifre'
-                handlePlaceholder='SIFRE'
-                isSecureText={true}
-                handleOnchangeText= {setPassword}
-                handleValue={password}
-            />
-            
-           <View style={{flex:3,width:'100%',alignItems:'center',justifyContent:"space-between"}}>
-            <CustomButton
-                handlePressButton={()=> alert(email + "   " + password)}
-                title={'Giriş Yap'}
-                setWidth={'80%'}
-                setHeight={50}
-                handleBackgroundColor={'#0a78ca'}
-                handlePressedBackgroundColor={'#b3cde0'}
-            />
+  return (
+    <SafeAreaView style={styles.container}>
+      <View
+        style={{
+          flex: 2,
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <Image
+          source={require("../../assets/barbaros.jpg")}
+          style={styles.logo}
+        />
+      </View>
+      <View style={{ flex: 3, width: "100%", alignItems: "center" }}>
+        <CustomTextInput
+          title="Email"
+          handlePlaceholder="EMAIL"
+          isSecureText={false}
+          handleOnchangeText={(text) => setEmail(text)}
+          handleValue={email}
+        />
 
-            <Pressable onPress={()=> navigation.navigate('Register')}>
-                <Text> Hesabınız Yok mu ?<Text style={{fontWeight:'bold'}}> Kayıt Olun</Text></Text>
-            </Pressable>
-            </View>
-           </View>
-{/* 
+        <CustomTextInput
+          title="Şifre"
+          handlePlaceholder="SIFRE"
+          isSecureText={true}
+          handleOnchangeText={(password) => setPassword(password)}
+          handleValue={password}
+        />
+
+        <View
+          style={{
+            flex: 3,
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "space-around",
+          }}
+        >
+          <CustomButton
+            handlePressButton={handleLogin}
+            title={"Giriş Yap"}
+            setWidth={"80%"}
+            setHeight={50}
+            handleBackgroundColor={"#0a78ca"}
+            handlePressedBackgroundColor={"#b3cde0"}
+          />
+
+          <Pressable onPress={() => navigation.navigate("Register")}>
+            <Text>
+              {" "}
+              Hesabınız Yok mu ?
+              <Text style={{ fontWeight: "bold" }}> Kayıt Olun</Text>
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+      {isLoading && <Loading />}
+      {/* 
             <View style={styles.signUpContainer}>
                 <Text>Hesabınız Yok mu?</Text>
                 <CustomButton
@@ -64,35 +98,32 @@ const LoginPage = ()=>{
                     handlePressedBackgroundColor={'#0a78ca'}
                 />
             </View> */}
-
-        </SafeAreaView>
-    )
-}
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-    
-    container:{
-        flex:1,
-        alignItems:"center",
-        justifyContent:"center",
-        backgroundColor:"#fffdff"
-    },
-    welcome:{
-        marginBottom:15,
-        fontWeight:'bold',
-        fontSize:35,
-        color:'#0a78ca'
-    },
-    logo:{
-        marginVertical:40
-    },
-    signUpContainer:{
-        width:"80%",
-        flexDirection:"row",
-        alignItems:"center",
-        justifyContent:"space-between",
-        
-    }
-})
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fffdff",
+  },
+  welcome: {
+    marginBottom: 15,
+    fontWeight: "bold",
+    fontSize: 35,
+    color: "#0a78ca",
+  },
+  logo: {
+    marginVertical: 40,
+  },
+  signUpContainer: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+});
 //011c75 , 0a78ca, 15b3da
 export default LoginPage;

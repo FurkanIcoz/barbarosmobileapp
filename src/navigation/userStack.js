@@ -8,7 +8,7 @@ const UserStack = () => {
   return (
    <Stack.Navigator
    initialRouteName='Home'>
-    <Stack.Screen name='Home' component={HomePage}/>
+    <Stack.Screen name='Home' component={HomePage} options={{headerShown:false}}/>
     <Stack.Screen name='Profile' component={ProfilePage}/>
    </Stack.Navigator>
   )
