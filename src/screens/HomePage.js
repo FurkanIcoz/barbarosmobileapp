@@ -1,74 +1,93 @@
 import {
   Button,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
-import MapView from "react-native-maps";
+import React, { useEffect, useRef, useState } from "react";
+import MapView, { Marker } from "react-native-maps";
 import "react-native-gesture-handler";
-import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { CustomButton } from "../components";
-import BottomSheetPage from "./BottomSheetPage";
+import { Ionicons } from "@expo/vector-icons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import * as Location from "expo-location";
 
 const HomePage = () => {
-  const sheetRef = useRef(null);
-  const [mapRegion, setmapRegion] = useState({
+  const [location, setLocation] = useState(null);
+  const mapRef = useRef(null); // MapView için ref oluşturma
+
+  const [mapRegion, setMapRegion] = useState({
     latitude: 39.87952924125737,
     longitude: 32.831225554797186,
     latitudeDelta: 0.0322,
     longitudeDelta: 0.0421,
   });
 
-  const renderContent = () => (
-    <View style={styles.sheetContent}>
-      <Text style={styles.sheetText}> MENU </Text>
-      <Button title="Paneli Kapat" onPress={() => sheetRef.current.snapTo(1)} />
-    </View>
-  );
-
+  useEffect(() => {
+    goToMyLocation();
+  }, []);
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      const newRegion = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0322,
+        longitudeDelta: 0.0421,
+      };
+      setMapRegion(newRegion);
+      if (mapRef.current) {
+        mapRef.current.animateToRegion(newRegion, 1000);
+      }
+      console.log("Konum bilgisi:", JSON.stringify(location));
+    })();
+  }, []);
+  const goToMyLocation = () => {
+    if (location && mapRef.current) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0322,
+          longitudeDelta: 0.0421,
+        },
+        2000
+      );
+    }
+  };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
         <View style={styles.mapContainer}>
-          <MapView locatio style={styles.map} region={mapRegion} />
-          <View style={styles.overlay}>
-            <Pressable
-              style={{
-                backgroundColor: "#0a78c0",
-                borderRadius: 25,
-                position: "absolute",
-                bottom: 55,
-                left: 85,
-                width: 40,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => sheetRef.current?.expand()}
-            >
-              <Text style={{ color: "orange" }}>///</Text>
-            </Pressable>
-          </View>
-          <BottomSheet
-            ref={sheetRef}
-            index={-1}
-            snapPoints={["50%", "85%"]}
-            enablePanDownToClose={true}
+          <MapView ref={mapRef} style={styles.map}>
+            {location && (
+              <Marker
+                coordinate={{
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                }}
+              >
+                <Ionicons name="egg-sharp" size={30} color="blue" />
+              </Marker>
+            )}
+          </MapView>
+
+          <TouchableOpacity
+            style={[styles.roundButton, styles.rightButton]}
+            onPress={goToMyLocation}
           >
-            <View style={styles.contentContainer}>
-              <BottomSheetPage />
-              {/* <Text>Merhaba .....</Text>
-              <Text>Cuzdan .....</Text>
-              <Text>Bize Ulasin .....</Text>
-              <Text>Suruslerim .....</Text>
-              <Text>Profil .....</Text>
-              <Text>Cikis Yap .....</Text> */}
-            </View>
-          </BottomSheet>
+            <Ionicons name="navigate" size={26} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.roundButton, styles.leftButton]}>
+            <MaterialCommunityIcons name="dolphin" size={26} color="white" />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
@@ -81,11 +100,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  tabContainer: {
-    backgroundColor: "#0a78c0",
-
-    height: 15,
-  },
   mapContainer: {
     flex: 1,
     alignItems: "center",
@@ -95,34 +109,25 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-
-  text: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  sheetContent: {
-    backgroundColor: "white",
-    padding: 16,
-    height: 450,
-  },
-  sheetText: {
-    fontSize: 20,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  overlay: {
-    position: "absolute", // Position overlay absolutely within mapContainer
-
-    left: 230, // Adjust as needed
-    // Adjust as needed
-    bottom: 650, // Adjust as needed
+  roundButton: {
+    position: "absolute",
+    bottom: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 30,
+    backgroundColor: "rgba(10, 120, 192, 0.75)",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1, // Ensure overlay is on top of the map
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
-  overlayText: {
-    color: "white", // Adjust as needed
-    fontSize: 18,
-    marginBottom: 20,
+  rightButton: {
+    right: 22,
+  },
+  leftButton: {
+    left: 22,
   },
 });

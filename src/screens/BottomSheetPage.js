@@ -15,7 +15,11 @@ const BottomSheetPage = () => {
       if (user?.uid) {
         const data = await fetchUserData(user.uid);
         if (data) {
+          console.log("BOTTOM SHEET PAGE LOG : ", data);
+
           setuserData(data);
+        } else {
+          console.log("BULUNJAMADI");
         }
       }
     };
@@ -36,7 +40,7 @@ const BottomSheetPage = () => {
         handlePressButton={handleLogout}
       />
 
-      {user ? (
+      {/* {user ? (
         <>
           <Text style={{ color: "black" }}>
             Isim Soyisim: {userData.fullName}
@@ -48,7 +52,7 @@ const BottomSheetPage = () => {
         </>
       ) : (
         <Text style={{ color: "black" }}>Kullanıcı bilgileri bulunamadı.</Text>
-      )}
+      )} */}
     </View>
   );
 };
