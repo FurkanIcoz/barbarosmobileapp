@@ -7,16 +7,25 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Location from "expo-location";
+import { MapStyle } from "../../assets/mapStyle";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from "firebase/firestore";
 
 const HomePage = () => {
   const [location, setLocation] = useState(null);
-  const mapRef = useRef(null); // MapView için ref oluşturma
+  const mapRef = useRef(null);
+  const [barbarosData, setBarbarosData] = useState([]);
 
   const [mapRegion, setMapRegion] = useState({
     latitude: 39.87952924125737,
@@ -26,8 +35,32 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-    goToMyLocation();
+    const getAllBarbarosData = async () => {
+      try {
+        const db = getFirestore();
+        const querySnapshot = await getDocs(collection(db, "dolphins"));
+        const dolphinsArray = [];
+
+        querySnapshot.forEach((doc) => {
+          dolphinsArray.push({ id: doc.id, ...doc.data() });
+        });
+
+        setBarbarosData(dolphinsArray);
+        console.log("Dolphins data fetched successfully:", dolphinsArray);
+        dolphinsArray.forEach((dolphin) => {
+          console.log(`Dolphin ID: ${dolphin.id}`);
+          console.log(`Battery Level: ${dolphin.battery_level}`);
+          console.log(`Current Location: `, dolphin.current_location);
+          console.log(`Status: ${dolphin.status}`);
+        });
+      } catch (error) {
+        console.error("Error fetching dolphins data: ", error);
+      }
+    };
+
+    getAllBarbarosData();
   }, []);
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -39,24 +72,21 @@ const HomePage = () => {
       const newRegion = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.0322,
-        longitudeDelta: 0.0421,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
       };
       setMapRegion(newRegion);
-      if (mapRef.current) {
-        mapRef.current.animateToRegion(newRegion, 1000);
-      }
-      console.log("Konum bilgisi:", JSON.stringify(location));
     })();
   }, []);
+
   const goToMyLocation = () => {
     if (location && mapRef.current) {
       mapRef.current.animateToRegion(
         {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: 0.0322,
-          longitudeDelta: 0.0421,
+          latitudeDelta: 0.0034,
+          longitudeDelta: 0.003,
         },
         2000
       );
@@ -64,19 +94,31 @@ const HomePage = () => {
   };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.mapContainer}>
-          <MapView ref={mapRef} style={styles.map}>
-            {location && (
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            showsUserLocation={true}
+            region={mapRegion}
+          >
+            {barbarosData.map((dolphin) => {
               <Marker
+                key={dolphin.id}
                 coordinate={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
+                  latitude: dolphin.current_location.latitude,
+                  longitude: dolphin.current_location.longitude,
                 }}
+                title={`Dolphin ID: ${dolphin.id}`}
+                description={`Battery Level: ${dolphin.battery_level}%`}
               >
-                <Ionicons name="egg-sharp" size={30} color="blue" />
-              </Marker>
-            )}
+                <MaterialCommunityIcons
+                  name="dolphin"
+                  size={26}
+                  color="white"
+                />
+              </Marker>;
+            })}
           </MapView>
 
           <TouchableOpacity
@@ -89,7 +131,7 @@ const HomePage = () => {
             <MaterialCommunityIcons name="dolphin" size={26} color="white" />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 };
