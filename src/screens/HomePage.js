@@ -1,11 +1,4 @@
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import "react-native-gesture-handler";
@@ -14,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Location from "expo-location";
 import { MapStyle } from "../../assets/mapStyle";
+import {CustomButton} from '../components/index'
 import {
   collection,
   doc,
@@ -46,20 +40,14 @@ const HomePage = () => {
         });
 
         setBarbarosData(dolphinsArray);
-        console.log("Dolphins data fetched successfully:", dolphinsArray);
-        dolphinsArray.forEach((dolphin) => {
-          console.log(`Dolphin ID: ${dolphin.id}`);
-          console.log(`Battery Level: ${dolphin.battery_level}`);
-          console.log(`Current Location: `, dolphin.current_location);
-          console.log(`Status: ${dolphin.status}`);
-        });
+       
       } catch (error) {
         console.error("Error fetching dolphins data: ", error);
       }
     };
 
     getAllBarbarosData();
-  }, []);
+  }, [barbarosData]);
 
   useEffect(() => {
     (async () => {
@@ -103,24 +91,44 @@ const HomePage = () => {
             region={mapRegion}
           >
             {barbarosData.map((dolphin) => {
-              <Marker
-                key={dolphin.id}
-                coordinate={{
-                  latitude: dolphin.current_location.latitude,
-                  longitude: dolphin.current_location.longitude,
-                }}
-                title={`Dolphin ID: ${dolphin.id}`}
-                description={`Battery Level: ${dolphin.battery_level}%`}
-              >
-                <MaterialCommunityIcons
-                  name="dolphin"
-                  size={26}
-                  color="white"
-                />
-              </Marker>;
+              if (
+                dolphin.current_location?.latitude &&
+                dolphin.current_location?.longitude
+              ) {
+                return (
+                  <Marker
+                    key={dolphin.id}
+                    coordinate={{
+                      latitude: dolphin.current_location.latitude,
+                      longitude: dolphin.current_location.longitude,
+                    }}
+                    title={`Dolphin ID: ${dolphin.id}`}
+                    description={`Battery Level: ${dolphin.battery_level}%`}
+                  >
+                    <MaterialCommunityIcons
+                      name="dolphin"
+                      size={30}
+                      color="blue"
+                    />
+                  </Marker>
+                );
+              }
+              return null;
             })}
           </MapView>
 
+          <CustomButton
+            style={styles.customButton} 
+            handlePressButton={()=>console.log("PRESSED BUTTON")}
+            title={"Sürüşe Başla"}
+            setWidth={"80%"}
+            setHeight={40}
+            handleBackgroundColor={"#0a78ca"}
+            handlePressedBackgroundColor={"#b3cde0"}
+            icon="qr-code-outline" // QR simgesi eklenir
+
+          />
+          <Image style={styles.topRoundButton} source={require('../../assets/barbaros.jpg')}/>
           <TouchableOpacity
             style={[styles.roundButton, styles.rightButton]}
             onPress={goToMyLocation}
@@ -143,20 +151,43 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mapContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    ...StyleSheet.absoluteFillObject
   },
   map: {
     width: "100%",
     height: "100%",
   },
+  customButton: {
+    position: 'absolute',
+    bottom: 10,  // Butonun alt tarafta yer almasını sağlar
+    alignSelf: 'center',  // Butonu ortalar
+    borderRadius:14
+
+
+  },
+  topRoundButton:{
+    position: "absolute",
+    top: 70,
+    width:"45%",
+    right:110,
+    height: 30,
+    borderRadius: 30,
+    backgroundColor: "rgba(10, 120, 192, 0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    opacity:0.7
+  },
   roundButton: {
     position: "absolute",
-    bottom: 20,
+    bottom: 80,
     width: 45,
     height: 45,
-    borderRadius: 30,
+    borderRadius: 10,
     backgroundColor: "rgba(10, 120, 192, 0.75)",
     justifyContent: "center",
     alignItems: "center",

@@ -4,8 +4,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import CustomTabBarButton from "../components/CustomTabBarButton";
+import { Divider } from "react-native-paper";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -16,9 +17,9 @@ const UserStack = () => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "QrPage") {
-            iconName = focused ? "qr-code-sharp" : "qr-code-sharp";
-          }
+          // if (route.name === "QrPage") {
+          //   iconName = focused ? "qr-code-sharp" : "qr-code-sharp";
+          // }
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Profile") {
@@ -35,6 +36,7 @@ const UserStack = () => {
           borderTopWidth: 0,
           elevation: 0,
         },
+        
       })}
     >
       <Tab.Screen
@@ -42,14 +44,15 @@ const UserStack = () => {
         component={HomePage}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="QrPage"
         component={HomePage}
         options={{
           headerShown: false,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
         }}
-      />
+      /> */}
+   
       <Tab.Screen
         name="Profile"
         component={ProfilePage}
