@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Location from "expo-location";
 import { MapStyle } from "../../assets/mapStyle";
-import {CustomButton} from '../components/index'
+import { CustomButton } from "../components/index";
 import {
   collection,
   doc,
@@ -15,12 +15,18 @@ import {
   getDocs,
   getFirestore,
 } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
 
 const HomePage = () => {
   const [location, setLocation] = useState(null);
   const mapRef = useRef(null);
   const [barbarosData, setBarbarosData] = useState([]);
+  const dispatch = useDispatch();
 
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   const [mapRegion, setMapRegion] = useState({
     latitude: 39.87952924125737,
     longitude: 32.831225554797186,
@@ -40,7 +46,6 @@ const HomePage = () => {
         });
 
         setBarbarosData(dolphinsArray);
-       
       } catch (error) {
         console.error("Error fetching dolphins data: ", error);
       }
@@ -118,17 +123,19 @@ const HomePage = () => {
           </MapView>
 
           <CustomButton
-            style={styles.customButton} 
-            handlePressButton={()=>console.log("PRESSED BUTTON")}
+            style={styles.customButton}
+            handlePressButton={() => console.log("PRESSED BUTTON")}
             title={"Sürüşe Başla"}
-            setWidth={"80%"}
-            setHeight={40}
+            setWidth={"90%"}
+            setHeight={45}
             handleBackgroundColor={"#0a78ca"}
             handlePressedBackgroundColor={"#b3cde0"}
             icon="qr-code-outline" // QR simgesi eklenir
-
           />
-          <Image style={styles.topRoundButton} source={require('../../assets/barbaros.jpg')}/>
+          <Image
+            style={styles.topRoundButton}
+            source={require("../../assets/barbaros.jpg")}
+          />
           <TouchableOpacity
             style={[styles.roundButton, styles.rightButton]}
             onPress={goToMyLocation}
@@ -137,6 +144,20 @@ const HomePage = () => {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.roundButton, styles.leftButton]}>
             <MaterialCommunityIcons name="dolphin" size={26} color="white" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={[styles.logoutButton, styles.leftLogoutButton]}
+          >
+            <MaterialCommunityIcons name="logout" size={26} color="white" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={[styles.helpButton, styles.rightHelpButton]}
+          >
+            <MaterialCommunityIcons name="help" size={26} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -151,25 +172,56 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mapContainer: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
   },
   map: {
     width: "100%",
     height: "100%",
   },
-  customButton: {
-    position: 'absolute',
-    bottom: 10,  // Butonun alt tarafta yer almasını sağlar
-    alignSelf: 'center',  // Butonu ortalar
-    borderRadius:14
-
-
+  helpButton: {
+    position: "absolute",
+    top: 80,
+    right: 22,
+    width: 45,
+    height: 45,
+    borderRadius: 10,
+    backgroundColor: "rgba(10, 120, 192, 0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
-  topRoundButton:{
+  logoutButton: {
+    position: "absolute",
+    top: 80,
+    left: 22,
+    width: 45,
+    height: 45,
+    borderRadius: 10,
+    backgroundColor: "rgba(10, 120, 192, 0.75)",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+  leftLogoutButton: {},
+  customButton: {
+    position: "absolute",
+    bottom: 80, // Butonun alt tarafta yer almasını sağlar
+    alignSelf: "center", // Butonu ortalar
+    borderRadius: 14,
+  },
+  topRoundButton: {
     position: "absolute",
     top: 70,
-    width:"45%",
-    right:110,
+    width: "45%",
+    right: 110,
     height: 30,
     borderRadius: 30,
     backgroundColor: "rgba(10, 120, 192, 0.75)",
@@ -180,11 +232,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    opacity:0.7
+    opacity: 0.7,
   },
   roundButton: {
     position: "absolute",
-    bottom: 80,
+    bottom: 155,
     width: 45,
     height: 45,
     borderRadius: 10,
