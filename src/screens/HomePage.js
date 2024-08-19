@@ -17,12 +17,14 @@ import {
 } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const HomePage = () => {
   const [location, setLocation] = useState(null);
   const mapRef = useRef(null);
   const [barbarosData, setBarbarosData] = useState([]);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -47,12 +49,12 @@ const HomePage = () => {
 
         setBarbarosData(dolphinsArray);
       } catch (error) {
-        console.error("Error fetching dolphins data: ", error);
+        console.error("Dolphins verileri alınırken hata oluştu: ", error);
       }
     };
 
     getAllBarbarosData();
-  }, [barbarosData]);
+  }, []); // sadece bileşen yüklendiğinde çalışır
 
   useEffect(() => {
     (async () => {
@@ -85,6 +87,7 @@ const HomePage = () => {
       );
     }
   };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -94,6 +97,7 @@ const HomePage = () => {
             style={styles.map}
             showsUserLocation={true}
             region={mapRegion}
+            customMapStyle={MapStyle}
           >
             {barbarosData.map((dolphin) => {
               if (
@@ -124,7 +128,7 @@ const HomePage = () => {
 
           <CustomButton
             style={styles.customButton}
-            handlePressButton={() => console.log("PRESSED BUTTON")}
+            handlePressButton={() => navigation.navigate('QRScanner')}
             title={"Sürüşe Başla"}
             setWidth={"90%"}
             setHeight={45}
