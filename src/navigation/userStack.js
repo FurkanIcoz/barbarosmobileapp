@@ -1,5 +1,5 @@
 import React from "react";
-import { HomePage, ProfilePage, QRScannerPage } from "../screens";
+import { DrivingPage, HomePage, ProfilePage, QRScannerPage } from "../screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
@@ -73,7 +73,12 @@ const UserStack = () => {
       <Stack.Screen
         name="QRScanner"
         component={QRScannerPage}
-        options={{ headerShown: true, title: "QR Scanner" }}
+        options={{ headerShown: false, title: "QR Scanner" }}
+      />
+      <Stack.Screen
+        name="DrivingPage"
+        component={DrivingPage}
+        options={{ headerShown: false, title: "Driving" }}
       />
     </Stack.Navigator>
   );
