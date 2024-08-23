@@ -60,7 +60,7 @@ const QRScannerPage = () => {
       await updateDoc(dolpRef, {
         status: true,
       });
-      navigation.navigate("DrivingPage");
+      navigation.navigate("DrivingPage", { qrData: scanData.data });
       setModalVisible(false);
     } catch (error) {}
   };
@@ -168,7 +168,9 @@ const QRScannerPage = () => {
           <View style={styles.modalView}>
             <TouchableOpacity
               style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
+              onPress={() => {
+                navigation.goBack();
+              }}
             >
               <Ionicons name="close" size={38} color="white" />
             </TouchableOpacity>
@@ -188,7 +190,7 @@ const QRScannerPage = () => {
               style={styles.startButton}
               onPress={handleStartDriving}
             >
-              <Text style={styles.textStyle}>Suruse Basla</Text>
+              <Text style={styles.textStyle}>Sürüşe Başla</Text>
             </TouchableOpacity>
           </View>
         </View>
