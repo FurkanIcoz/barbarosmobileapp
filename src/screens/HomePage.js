@@ -12,13 +12,13 @@ import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { useNavigation } from "@react-navigation/native";
-import Loading from "../components/Loading"; // Yüklenme bileşenini içe aktar
+import Loading from "../components/Loading";
 
 const HomePage = () => {
   const [location, setLocation] = useState(null);
   const [barbarosData, setBarbarosData] = useState([]);
-  const [locationLoading, setLocationLoading] = useState(true); // Lokasyon yüklenme durumu
-  const [dataLoading, setDataLoading] = useState(true); // Veri yüklenme durumu
+  const [locationLoading, setLocationLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -46,10 +46,10 @@ const HomePage = () => {
         });
 
         setBarbarosData(dolphinsArray);
-        setDataLoading(false); // Veri alındı, yüklenmeyi bitir
+        setDataLoading(false);
       } catch (error) {
         console.error("Dolphins verileri alınırken hata oluştu: ", error);
-        setDataLoading(false); // Hata oluştu, yüklenmeyi bitir
+        setDataLoading(false);
       }
     };
 
