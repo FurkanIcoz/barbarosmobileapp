@@ -63,11 +63,12 @@ const HomePage = () => {
         setLocationLoading(false);
         return;
       }
+      
       const subscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
           timeInterval: 1000,
-          distanceInterval: 1,
+          distanceInterval: 2,
         },
         (location) => {
           setLocation(location);

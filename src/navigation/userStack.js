@@ -1,5 +1,5 @@
 import React from "react";
-import { DrivingPage, HomePage, ProfilePage, QRScannerPage } from "../screens";
+import { ContactUsPage, DrivesPage, DrivingPage, HelpDrivePage, HomePage, ProfilePage, QRScannerPage, SettingsPage, WalletPage } from "../screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
@@ -58,6 +58,7 @@ const TabNavigator = () => {
         component={ProfilePage}
         options={{ headerShown: false }}
       />
+      
     </Tab.Navigator>
   );
 };
@@ -73,12 +74,37 @@ const UserStack = () => {
       <Stack.Screen
         name="QRScanner"
         component={QRScannerPage}
-        options={{ headerShown: false, title: "QR Scanner" }}
+        options={{ headerShown: false, title: "QR Scanner"}}
       />
       <Stack.Screen
         name="DrivingPage"
         component={DrivingPage}
-        options={{ headerShown: false, title: "Driving" }}
+        options={{ headerShown: false, title: "Driving"}}
+      />
+      <Stack.Screen
+        name="ContactUs"
+        component={ContactUsPage}
+        options={{ headerShown: true, title: "Bize Ulaşın",headerBackTitleVisible:false }}
+      />
+      <Stack.Screen
+        name="Wallet"
+        component={WalletPage}
+        options={{ headerShown: true, title:"Barbaros Cüzdanım",headerBackTitleVisible:false }}
+      />
+      <Stack.Screen
+        name="Drives"
+        component={DrivesPage}
+        options={{ headerShown: true, title:"Sürüşlerim",headerBackTitleVisible:false}}
+      />
+      <Stack.Screen
+        name="HelpDrive"
+        component={HelpDrivePage}
+        options={{ headerShown: true, title:"Sürüş Kılavuzu",headerBackTitleVisible:false }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsPage}
+        options={{ headerShown: true, title:"Ayarlar",headerBackTitleVisible:false }}
       />
     </Stack.Navigator>
   );

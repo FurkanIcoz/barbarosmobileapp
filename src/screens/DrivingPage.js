@@ -13,6 +13,7 @@ import {
   getDoc,
   getFirestore,
   onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
@@ -94,20 +95,6 @@ const DrivingPage = () => {
     };
   }, []);
 
-  const goToMyLocation = () => {
-    if (location && mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.0034,
-          longitudeDelta: 0.003,
-        },
-        2000
-      );
-    }
-  };
-
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -122,7 +109,10 @@ const DrivingPage = () => {
       const startTime = new Date(now.getTime() - elapsedTime * 1000);
       const endTime = now;
       const date = now.toISOString().split("T")[0];
-
+      const dolpRef = doc(db,"dolphins",qrData);
+      await updateDoc(dolpRef,{
+        status:false,
+      })
       await addDoc(collection(db, "rides"), {
         duration: formatTime(elapsedTime),
         price: dollarAmount,
@@ -175,7 +165,7 @@ const DrivingPage = () => {
               <View style={styles.iconContainer}>
                 <Ionicons name="wallet-sharp" size={36} color={"#0a78ca"} />
                 <Text style={[styles.iconLabel, styles.dollarText]}>
-                  {dollarAmount}$
+                  {dollarAmount}₺
                 </Text>
               </View>
             </View>
@@ -191,10 +181,10 @@ const DrivingPage = () => {
             handlePressedBackgroundColor={"#b3cde0"}
           />
 
-          <Image
+          {/* <Image
             style={styles.topRoundButton}
             source={require("../../assets/barbaros.jpg")}
-          />
+          /> */}
         </View>
       </View>
     </GestureHandlerRootView>
@@ -235,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
-    fontWeight: "700",
+    fontWeight: "ultralight",
     fontSize: 28,
     color: "#0a78ca",
     textShadowColor: "#000",

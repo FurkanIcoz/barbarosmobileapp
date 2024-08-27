@@ -11,7 +11,7 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 export const login = createAsyncThunk(
   "user/login",
-  async ({ email, password }) => {
+  async ({ email, password },{rejectWithValue}) => {
     try {
       const auth = getAuth();
       const userCredential = await signInWithEmailAndPassword(
@@ -31,6 +31,7 @@ export const login = createAsyncThunk(
 
       return userData;
     } catch (error) {
+      return rejectWithValue(error.message)
       console.log("userSlice 21. Line : ", error);
       throw error;
     }
@@ -129,7 +130,7 @@ export const userSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.isAuth = false;
-        state.error = action.error.message;
+        state.error = action.payload;
         state.isLoading = false;
       })
 

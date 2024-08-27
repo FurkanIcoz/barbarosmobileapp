@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   StyleSheet,
@@ -14,7 +14,7 @@ import { Camera, CameraView, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { CustomButton } from "../components";
-import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 
 const { width, height } = Dimensions.get("window");
 const qrSize = 250;
@@ -25,16 +25,31 @@ const QRScannerPage = () => {
   const [scanData, setScanData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-  const handleBarCodeScanned = ({ type, data, bounds }) => {
+  const handleBarCodeScanned = async ({ type, data, bounds }) => {
     if (isInQRFrame(bounds)) {
       setScanned(true);
       setScanData({ type, data });
-      console.log(`QR kodu tarandı! Tip: ${type} Veri: ${data}`);
-
+  
+      try {
+        const db = getFirestore();
+        const docRef = doc(db, "dolphins", data);
+        const docSnap = await getDoc(docRef);
+  
+        if (docSnap.exists()) {
+          const batteryLevel = docSnap.data().battery_level;
+          setScanData({ type, data: { ...docSnap.data(), battery_level: batteryLevel } });
+        } else {
+          console.log("Belirtilen belge bulunamadı");
+        }
+      } catch (error) {
+        console.error("Hata:", error);
+      }
+  
       setModalVisible(true);
-    } else {
     }
   };
+
+  
 
   const isInQRFrame = (bounds) => {
     if (!bounds || !bounds.origin) return false;
@@ -52,6 +67,7 @@ const QRScannerPage = () => {
       x >= frameLeft && x <= frameRight && y >= frameTop && y <= frameBottom
     );
   };
+
   const handleStartDriving = async () => {
     try {
       const aracId = scanData.data;
@@ -152,10 +168,10 @@ const QRScannerPage = () => {
           style={{
             textAlign: "center",
             justifyContent: "center",
-            fontSize: 30,
+            fontSize: 23,
           }}
         >
-          Araç Üzerinde Bulunan QR Kodunu Okutunuz
+          Araç üzerinde bulunan QR kodunu okutunuz
         </Text>
       </View>
       <Modal
@@ -181,11 +197,11 @@ const QRScannerPage = () => {
                 source={require("../../assets/barbaros.jpg")}
               />
               <Text style={styles.modalText}>Fiyatlandırma</Text>
-              <Text style={styles.pricingText}>Baslangıç: 0.99$</Text>
-              <Text style={styles.pricingText}>Dakika: 0.99$</Text>
+              <Text style={styles.pricingText}>Baslangıç: 0.99₺</Text>
+              <Text style={styles.pricingText}>Dakika: 0.99₺</Text>
               <Text style={styles.modalText}>Şarj Durumu</Text>
-              <Text style={styles.pricingText}>84%</Text>
-            </View>
+              <Text style={styles.pricingText}>{scanData?.data?.battery_level || 0}%</Text>
+              </View>
             <TouchableOpacity
               style={styles.startButton}
               onPress={handleStartDriving}
@@ -268,7 +284,7 @@ const styles = StyleSheet.create({
   modalView: {
     width: "85%",
     height: "79%",
-    backgroundColor: "rgba(39, 230, 245, 0.8)",
+    backgroundColor: "rgba(199, 230, 245, 0.8)",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",

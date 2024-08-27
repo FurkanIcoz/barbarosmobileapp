@@ -12,11 +12,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { Avatar, Caption, List, Title } from "react-native-paper";
 import { Loading } from "../components";
 import { logout } from "../redux/userSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user.user);
   const [userData, setUserData] = useState(null);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -54,7 +56,7 @@ const ProfilePage = () => {
             titleStyle={styles.listTitle}
             title="Bize Ulasin"
             left={() => <List.Icon icon="phone" />}
-            onPress={() => console.log("Pressed BIZE ULASIN")}
+            onPress={() => navigation.navigate("ContactUs")}
           />
         </View>
         <View style={styles.menuItem}>
@@ -63,7 +65,7 @@ const ProfilePage = () => {
             titleStyle={styles.listTitle}
             title="Barbaros Cuzdanim"
             left={() => <List.Icon icon="credit-card" />}
-            onPress={() => console.log("Pressed Barbaros Cuzdanim")}
+            onPress={() => navigation.navigate("Wallet")}
           />
         </View>
         <View style={styles.menuItem}>
@@ -72,7 +74,7 @@ const ProfilePage = () => {
             titleStyle={styles.listTitle}
             title="Suruslerim"
             left={() => <List.Icon icon="history" />}
-            onPress={() => console.log("Pressed Suruslerim")}
+            onPress={() => navigation.navigate("Drives")}
           />
         </View>
         <View style={styles.menuItem}>
@@ -81,7 +83,7 @@ const ProfilePage = () => {
             titleStyle={styles.listTitle}
             title="Surus Kilavuzu"
             left={() => <List.Icon icon="security" />}
-            onPress={() => console.log("Pressed Surus Kilavuzu")}
+            onPress={() => navigation.navigate("HelpDrive")}
           />
         </View>
         <View style={styles.menuItem}>
@@ -90,7 +92,7 @@ const ProfilePage = () => {
             titleStyle={styles.listTitle}
             title="Ayarlar"
             left={() => <List.Icon icon="account-settings" />}
-            onPress={() => console.log("Pressed Ayarlar")}
+            onPress={() => navigation.navigate("Settings")}
           />
         </View>
         <View style={styles.menuItem}>
