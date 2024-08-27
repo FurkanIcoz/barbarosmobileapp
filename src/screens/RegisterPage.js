@@ -16,7 +16,7 @@ import { CustomButton, CustomTextInput, Loading } from "../components";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../redux/userSlice";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 const RegisterPage = () => {
   const navigation = useNavigation();
@@ -26,6 +26,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.user);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const validatePassword = (password) => {
     const minLength = 6;
@@ -47,35 +48,39 @@ const RegisterPage = () => {
       return "Şifre en az bir harf içermelidir.";
     }
     if (!hasSpecialChar.test(password)) {
-      return "Şifre en az bir özel karakter içermelidir.(,.!*-_)"
+      return "Şifre en az bir özel karakter içermelidir.";
     }
     return null;
   };
 
   const handleRegister = () => {
     if (!fullName || !phoneNumber || !email || !password) {
+      setErrorMessage("Lütfen tüm alanları doldurunuz.");
       Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: 'Kayıt Başarısız',
-        text2: 'Lütfen tüm alanları doldurduğunuzdan emin olun.',
+        type: "error",
+        position: "top",
+        text1: "Kayıt Başarısız",
+        text2: "Lütfen tüm alanları doldurduğunuzdan emin olun.",
         visibilityTime: 4000,
       });
       return;
     }
 
-
     const passwordError = validatePassword(password);
+
     if (passwordError) {
+      setErrorMessage(passwordError);
+
       Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: 'Şifre Hatası',
+        type: "error",
+        position: "top",
+        text1: "Şifre Hatası",
         text2: passwordError,
         visibilityTime: 4000,
       });
       return;
     }
+    setErrorMessage("");
 
     dispatch(register({ email, password, fullName, phoneNumber }));
   };
@@ -87,7 +92,7 @@ const RegisterPage = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-      <Toast/>
+        {/* <Toast /> */}
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -111,7 +116,9 @@ const RegisterPage = () => {
               <CustomTextInput
                 title="Telefon"
                 isSecureText={false}
-                handleOnchangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+                handleOnchangeText={(phoneNumber) =>
+                  setPhoneNumber(phoneNumber)
+                }
                 handleValue={phoneNumber}
                 handlePlaceholder="Telefon Numaranızı Giriniz"
               />
@@ -130,6 +137,9 @@ const RegisterPage = () => {
                 handlePlaceholder="Bir Şifre Belirleyin"
               />
             </View>
+            {errorMessage ? (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            ) : null}
             <View style={styles.signupOptions}>
               <CustomButton
                 handlePressButton={handleRegister}
@@ -150,7 +160,6 @@ const RegisterPage = () => {
         </KeyboardAvoidingView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
-    
   );
 };
 
@@ -160,10 +169,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fffdff",
-    justifyContent:'center',
+    justifyContent: "center",
   },
   keyboardAvoidingView: {
     flex: 1,
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 5,
+    textAlign: "center",
   },
   scrollViewContent: {
     flexGrow: 1,

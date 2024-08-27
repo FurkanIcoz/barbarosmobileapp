@@ -13,7 +13,7 @@ import { CustomButton, CustomTextInput, Loading } from "../components/index";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { login, autoLogin } from "../redux/userSlice";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 const LoginPage = () => {
   const { isLoading, error } = useSelector((state) => state.user);
@@ -21,42 +21,34 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     dispatch(autoLogin());
   }, [dispatch]);
 
   useEffect(() => {
-    if (error) {
-      Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: 'Giriş Hatası',
-        text2: "Email veya şifreyi doğru girdiğinizden emin olun.",
-        visibilityTime: 4000,
-      });
-    }
-  }, [error]);
+    const unsubscribe = navigation.addListener("focus", () => {
+      setErrorMessage("");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleLogin = () => {
     if (!email || !password) {
-      Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: 'Giriş Başarısız',
-        text2: 'Lütfen tüm alanları doldurduğunuzdan emin olun.',
-        visibilityTime: 4000,
-      });
+      setErrorMessage("Lütfen tüm alanları doldurduğunuzdan emin olun.");
       return;
+    } else if (error) {
+      setErrorMessage("Email veya şifreyi doğru girdiğinizden emin olun.");
     }
-
     dispatch(login({ email, password }));
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <Toast />
+        {/* <Toast /> */}
         <View style={styles.header}>
           <Image
             source={require("../../assets/barbaros.jpg")}
@@ -64,22 +56,26 @@ const LoginPage = () => {
           />
         </View>
         <View style={styles.form}>
-          <CustomTextInput
-            title="Email"
-            handlePlaceholder="EMAIL"
-            isSecureText={false}
-            handleOnchangeText={(text) => setEmail(text)}
-            handleValue={email}
-          />
+          <View style={styles.textInputContainer}>
+            <CustomTextInput
+              title="Email"
+              handlePlaceholder="EMAIL"
+              isSecureText={false}
+              handleOnchangeText={(text) => setEmail(text)}
+              handleValue={email}
+            />
 
-          <CustomTextInput
-            title="Şifre"
-            handlePlaceholder="ŞIFRE"
-            isSecureText={true}
-            handleOnchangeText={(text) => setPassword(text)}
-            handleValue={password}
-          />
-
+            <CustomTextInput
+              title="Şifre"
+              handlePlaceholder="ŞIFRE"
+              isSecureText={true}
+              handleOnchangeText={(text) => setPassword(text)}
+              handleValue={password}
+            />
+          </View>
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
           <View style={styles.actions}>
             <CustomButton
               handlePressButton={handleLogin}
@@ -89,7 +85,15 @@ const LoginPage = () => {
               handleBackgroundColor={"#0a78ca"}
               handlePressedBackgroundColor={"#b3cde0"}
             />
-
+            <CustomButton
+              style={styles.kurumsalLogin}
+              handlePressButton={() => console.log("Kurumsal Giris")}
+              title={"Kurumsal Giriş"}
+              setWidth={"60%"}
+              setHeight={40}
+              handleBackgroundColor={"#0a78ca"}
+              handlePressedBackgroundColor={"#b3cde0"}
+            />
             <Pressable onPress={() => navigation.navigate("Register")}>
               <Text>
                 Hesabınız Yok mu?
@@ -112,16 +116,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#fffdff",
   },
   header: {
-    flex: 2,
+    flex: 1,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  errorText: {
+    color: "red",
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  textInputContainer: {
+    flex: 3,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    paddingVertical: 10,
   },
   logo: {
     marginVertical: 40,
   },
   form: {
-    flex: 3,
+    flex: 3.5,
     width: "100%",
     alignItems: "center",
   },
