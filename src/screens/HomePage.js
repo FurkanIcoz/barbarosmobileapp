@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import "react-native-gesture-handler";
@@ -22,6 +22,8 @@ const HomePage = () => {
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   const handleLogout = () => {
     dispatch(logout());
@@ -33,6 +35,10 @@ const HomePage = () => {
     latitudeDelta: 0.0322,
     longitudeDelta: 0.0421,
   });
+
+  const handleInfo =()=>{
+    setModalVisible(true);
+  }
 
   useEffect(() => {
     const getAllBarbarosData = async () => {
@@ -173,11 +179,36 @@ const HomePage = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={handleLogout}
+              onPress={handleInfo}
               style={[styles.helpButton, styles.rightHelpButton]}
             >
               <MaterialCommunityIcons name="help" size={26} color="white" />
             </TouchableOpacity>
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={()=>setModalVisible(false)}
+              >                
+                 <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+                <View style={styles.modalContainer}>
+                  <TouchableWithoutFeedback>
+                    <View style={styles.modalView}>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => setModalVisible(false)}
+                      >
+                        <Ionicons name="close" size={38} color="white" />
+                      </TouchableOpacity>
+
+                      <View style={styles.circle}>
+                        <Text style={styles.modalText}>Bilgilendirme</Text>
+                      </View>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+              </TouchableWithoutFeedback>
+              </Modal>
           </View>
         )}
       </View>
@@ -274,5 +305,32 @@ const styles = StyleSheet.create({
   },
   leftButton: {
     left: 22,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0)",
+  },
+  modalView: {
+    width: "85%",
+    height: "59%",
+    marginBottom:70,
+    backgroundColor: "rgba(199, 230, 245, 1)",
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+  },
+  modalText: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginVertical: 7,
   },
 });

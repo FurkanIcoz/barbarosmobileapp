@@ -24,17 +24,18 @@ const QRScannerPage = () => {
   const [scanned, setScanned] = useState(false);
   const [scanData, setScanData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [scannedAracId,setScannedAracId] = useState("")
   const navigation = useNavigation();
   const handleBarCodeScanned = async ({ type, data, bounds }) => {
     if (isInQRFrame(bounds)) {
       setScanned(true);
       setScanData({ type, data });
-  
+      setScannedAracId(data)
       try {
         const db = getFirestore();
         const docRef = doc(db, "dolphins", data);
         const docSnap = await getDoc(docRef);
-  
+        
         if (docSnap.exists()) {
           const batteryLevel = docSnap.data().battery_level;
           setScanData({ type, data: { ...docSnap.data(), battery_level: batteryLevel } });
@@ -70,20 +71,19 @@ const QRScannerPage = () => {
 
   const handleStartDriving = async () => {
     try {
-      const aracId = scanData.data;
+      const aracId = scannedAracId;
       const db = getFirestore();
       const dolpRef = doc(db, "dolphins", aracId);
+      
       await updateDoc(dolpRef, {
         status: true,
       });
-      navigation.navigate("DrivingPage", { qrData: scanData.data });
+      navigation.navigate("DrivingPage", { qrData: aracId });
       setModalVisible(false);
-    } catch (error) {}
-  };
-  const handleRescan = () => {
-    setScanned(false);
-    setScanData(null);
-    setModalVisible(false);
+
+    } catch (error) {
+      console.log(`LINE 91:  ${error}`)
+    }
   };
 
   if (permission === null) {

@@ -35,16 +35,21 @@ const LoginPage = () => {
     return unsubscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    if (error) {
+      setErrorMessage("Email veya şifreyi doğru girdiğinizden emin olun.");
+    }
+  }, [error]);
+
   const handleLogin = () => {
+    setErrorMessage("");
     if (!email || !password) {
       setErrorMessage("Lütfen tüm alanları doldurduğunuzdan emin olun.");
       return;
-    } else if (error) {
-      setErrorMessage("Email veya şifreyi doğru girdiğinizden emin olun.");
     }
+
     dispatch(login({ email, password }));
   };
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
