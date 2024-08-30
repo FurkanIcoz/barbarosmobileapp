@@ -35,20 +35,28 @@ const LoginPage = () => {
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    if (error) {
-      setErrorMessage("Email veya şifreyi doğru girdiğinizden emin olun.");
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   console.log(error);
 
-  const handleLogin = () => {
-    setErrorMessage("");
+  //   if (error) {
+  //     setErrorMessage("Email veya şifreyi doğru girdiğinizden emin olun.");
+  //   } else {
+  //     setErrorMessage("");
+  //   }
+  // }, [error]);
+
+  const handleLogin = async () => {
     if (!email || !password) {
       setErrorMessage("Lütfen tüm alanları doldurduğunuzdan emin olun.");
       return;
     }
-
-    dispatch(login({ email, password }));
+    setErrorMessage("");
+    await dispatch(login({ email, password }));
+    console.log("58" + isLoading);
+    if (isLoading === false) {
+      setErrorMessage("Email veya şifreyi doğru girdiğinizden emin olun.");
+      return;
+    }
   };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -10,9 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData } from "../services/userService";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar, Caption, List, Title } from "react-native-paper";
-import { Loading } from "../components";
+import { CustomButton, Loading } from "../components";
 import { logout } from "../redux/userSlice";
 import { useNavigation } from "@react-navigation/native";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user.user);
@@ -25,7 +26,7 @@ const ProfilePage = () => {
       if (user.uid) {
         const data = await fetchUserData(user.uid);
         if (data) {
-          console.log("PROFILE PAGE LOG:::", data);
+          //console.log("PROFILE PAGE LOG:::", data);
           setUserData(data);
         } else {
           console.log("BULUNAMADI PROFILE PAGE LOG ");

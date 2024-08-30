@@ -9,7 +9,11 @@ import DrivesPage from "./DrivesPage";
 import HelpDrivePage from "./HelpDrivePage";
 import SettingsPage from "./SettingsPage";
 import WalletPage from "./WalletPage";
+import TopUpPage from "./TopUpPage";
+import AddCardPage from "./AddCardPage";
 export {
+  TopUpPage,
+  AddCardPage,
   WalletPage,
   SettingsPage,
   HelpDrivePage,
