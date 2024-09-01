@@ -1,4 +1,4 @@
-import { Image, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Image, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import "react-native-gesture-handler";
@@ -92,6 +92,24 @@ const HomePage = () => {
     })();
   }, []);
 
+
+//JAULFHJKAHFKLJASHFKASGFASGJFGASKJFASFJASGJSAGFKJAGKJFASG,F
+
+// useEffect(()=>{
+//   const newRegion = {
+//     latitude:36.939778,
+//     longitude:30.816646,
+//     latitudeDelta: 0.012,
+//     longitudeDelta: 0.012,
+//   };
+//   setLocation(location);
+//   setMapRegion(location);
+//   setLocationLoading(false);
+
+// })
+
+
+
   const goToMyLocation = () => {
     if (location && mapRef.current) {
       mapRef.current.animateToRegion(
@@ -120,6 +138,7 @@ const HomePage = () => {
               region={mapRegion}
               customMapStyle={MapStyle}
             >
+              
               {barbarosData.map((dolphin) => {
                 if (
                   dolphin.current_location?.latitude &&
@@ -132,14 +151,15 @@ const HomePage = () => {
                         latitude: dolphin.current_location.latitude,
                         longitude: dolphin.current_location.longitude,
                       }}
-                      title={`Dolphin ID: ${dolphin.id}`}
-                      description={`Battery Level: ${dolphin.battery_level}%`}
+                      title={`${(dolphin.id).substring(0,4).toUpperCase()}`}
+                      description={`Şarj Durumu: ${dolphin.battery_level}%`}
                     >
-                      <MaterialCommunityIcons
+                      {/* <MaterialCommunityIcons
                         name="dolphin"
                         size={30}
                         color="blue"
-                      />
+                      /> */}
+                      <Image style={{height:40,width:40}} source={require("../../assets/barboaracran.png")}/>
                     </Marker>
                   );
                 }
@@ -159,7 +179,7 @@ const HomePage = () => {
             />
             <Image
               style={styles.topRoundButton}
-              source={require("../../assets/barbaros.jpg")}
+              source={require("../../assets/barbostranlogo.png")}
             />
             <TouchableOpacity
               style={[styles.roundButton, styles.rightButton]}
@@ -231,7 +251,7 @@ const styles = StyleSheet.create({
   },
   helpButton: {
     position: "absolute",
-    top: 80,
+    top: 50,
     right: 22,
     width: 45,
     height: 45,
@@ -247,7 +267,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     position: "absolute",
-    top: 80,
+    top: 50,
     left: 22,
     width: 45,
     height: 45,
@@ -270,12 +290,12 @@ const styles = StyleSheet.create({
   },
   topRoundButton: {
     position: "absolute",
-    top: 50,
+    top: 52,
     alignSelf: "center",
-    width: 240,
-    height: 50,
+    width: 220,
+    height: 51,
     borderRadius: 50,
-    backgroundColor: "#0a78ca",
+    //backgroundColor: "#0a78ca",
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",

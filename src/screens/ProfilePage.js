@@ -1,5 +1,6 @@
 import {
   Pressable,
+  ScrollView,
   ScrollViewComponent,
   StyleSheet,
   Text,
@@ -20,7 +21,8 @@ const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
+  const { balance, cards, isLoading, error } = useSelector((state) => state.wallet);
+  const [loading,setLoading] = useState(true);
   useEffect(() => {
     const getUserData = async () => {
       if (user.uid) {
@@ -28,6 +30,7 @@ const ProfilePage = () => {
         if (data) {
           //console.log("PROFILE PAGE LOG:::", data);
           setUserData(data);
+          setLoading(false)
         } else {
           console.log("BULUNAMADI PROFILE PAGE LOG ");
         }
@@ -38,17 +41,30 @@ const ProfilePage = () => {
   const handleLogout = () => {
     dispatch(logout());
   };
+
+  if(loading){
+    return <Loading/>
+  }
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.userInfoSection}>
         <View style={styles.userInfoContent}>
-          <Avatar.Icon size={65} icon={"account"} style={styles.avatar} />
+          {/* <Avatar.Icon size={65} icon={"account"} style={styles.avatar} /> */}
           <View style={styles.textContainer}>
-            <Title style={styles.title}>{userData?.fullName}</Title>
+            <Title style={styles.title}>{`Merhaba, ${userData?.fullName.split(' ')[0]}`}</Title>
             <Caption style={styles.caption}>{userData?.email}</Caption>
             <Caption style={styles.caption}>{userData?.phoneNumber}</Caption>
           </View>
         </View>
+      </View>
+      <View style={styles.menuWrapperWallet}>
+      <View style={styles.balanceContainer}>
+        <Text style={styles.balanceText}>Cüzdan Bakiyem</Text>
+        <Text style={styles.balanceAmount}>₺{balance.toFixed(2)}</Text>
+        <Pressable style={styles.topUpButton} onPress={() => navigation.navigate("TopUpPage")}>
+          <Text style={styles.topUpText}>Bakiye Yükle</Text>
+        </Pressable>
+      </View>
       </View>
       <View style={styles.menuWrapper}>
         <View style={styles.menuItem}>
@@ -106,7 +122,7 @@ const ProfilePage = () => {
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -120,16 +136,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
   },
   userInfoSection: {
-    marginTop: 20,
-    paddingHorizontal: 20,
+    marginTop: 40,
+    paddingHorizontal: 5,
     paddingVertical: 15,
-    marginBottom: 25,
+    marginBottom: 15,
     marginHorizontal: 10,
     backgroundColor: "#fff",
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
+    
     shadowRadius: 5,
     elevation: 5,
   },
@@ -159,6 +176,12 @@ const styles = StyleSheet.create({
   menuWrapper: {
     borderWidth: 0,
     margin: 10,
+    marginHorizontal:3,
+    padding: 8,
+    bottom:10
+  },
+  menuWrapperWallet: {
+    borderWidth: 0,
     padding: 8,
   },
   listItem: {
@@ -181,5 +204,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
+  },
+  balanceContainer: {
+    padding: 16,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    marginBottom: 7,
+  },
+  balanceText: {
+    fontSize: 18,
+    color: "#555",
+  },
+  balanceAmount: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#4d9ee9",
+    marginVertical: 8,
+  },
+  topUpButton: {
+    backgroundColor: "#4d9ee9",
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
+  },
+  topUpText: {
+    color: "#fff",
+    fontSize: 16,
   },
 });

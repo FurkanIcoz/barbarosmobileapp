@@ -1,12 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  FlatList,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWallet } from "../redux/walletSlice";
 import { Loading } from "../components";
@@ -14,9 +7,7 @@ import CustomButton from "../components/CustomButton"; // Özel buton componenti
 
 const WalletPage = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { balance, cards, isLoading, error } = useSelector(
-    (state) => state.wallet
-  );
+  const { balance, cards, isLoading, error } = useSelector((state) => state.wallet);
   const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
@@ -27,28 +18,22 @@ const WalletPage = ({ navigation }) => {
     return <Loading />;
   }
 
-  if (error) {
-    return <Text>Hata: {error}</Text>;
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Cüzdan Bakiyem</Text>
         <Text style={styles.balanceAmount}>₺{balance.toFixed(2)}</Text>
-        <Pressable
-          style={styles.topUpButton}
-          onPress={() => navigation.navigate("TopUpPage")}
-        >
+        <Pressable style={styles.topUpButton} onPress={() => navigation.navigate("TopUpPage")}>
           <Text style={styles.topUpText}>Bakiye Yükle</Text>
         </Pressable>
       </View>
 
+      <Text style={styles.cardsHeader}>Kartlarım</Text>
       <FlatList
         data={cards}
         renderItem={({ item }) => (
           <View style={styles.cardContainer}>
-            <Text>{item.cardNumber}</Text>
+            <Text>{`**** **** **** ${item.cardNumber.slice(-4)}`}</Text>
             <Text>{item.isDefault ? "Varsayılan" : ""}</Text>
           </View>
         )}
@@ -56,10 +41,7 @@ const WalletPage = ({ navigation }) => {
         ListEmptyComponent={<Text>Kayıtlı kart bulunmamaktadır.</Text>}
       />
 
-      <Pressable
-        style={styles.addCardButton}
-        onPress={() => navigation.navigate("AddCardPage")}
-      >
+      <Pressable style={styles.addCardButton} onPress={() => navigation.navigate("AddCardPage")}>
         <Text style={styles.addCardText}>Kart Ekle</Text>
       </Pressable>
     </View>
@@ -87,11 +69,11 @@ const styles = StyleSheet.create({
   balanceAmount: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#00b300",
+    color: "#4d9ee9",
     marginVertical: 8,
   },
   topUpButton: {
-    backgroundColor: "#00b300",
+    backgroundColor: "#4d9ee9",
     borderRadius: 5,
     padding: 10,
     alignItems: "center",
@@ -100,8 +82,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
-  friendButton: {
-    marginVertical: 16,
+  cardsHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
   },
   cardContainer: {
     padding: 12,
@@ -111,14 +95,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   addCardButton: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#4d9ee9",
     borderRadius: 5,
     padding: 10,
     alignItems: "center",
     marginTop: 16,
   },
   addCardText: {
-    color: "#555",
+    color: "#fff",
     fontSize: 16,
   },
 });

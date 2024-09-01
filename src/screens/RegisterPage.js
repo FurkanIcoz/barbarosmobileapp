@@ -27,6 +27,7 @@ const RegisterPage = () => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.user);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isEnglish, setIsEnglish] = useState(false);
 
   const validatePassword = (password) => {
     const minLength = 6;
@@ -36,31 +37,47 @@ const RegisterPage = () => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
 
     if (password.length < minLength) {
-      return "Şifre en az 6 karakter uzunluğunda olmalıdır.";
+      return isEnglish
+        ? "Password must be at least 6 characters long."
+        : "Şifre en az 6 karakter uzunluğunda olmalıdır.";
     }
     if (password.length > maxLength) {
-      return "Şifre en fazla 14 karakter uzunluğunda olabilir.";
+      return isEnglish
+        ? "Password can be up to 14 characters long."
+        : "Şifre en fazla 14 karakter uzunluğunda olabilir.";
     }
     if (!hasNumber.test(password)) {
-      return "Şifre en az bir rakam içermelidir.";
+      return isEnglish
+        ? "Password must contain at least one number."
+        : "Şifre en az bir rakam içermelidir.";
     }
     if (!hasLetter.test(password)) {
-      return "Şifre en az bir harf içermelidir.";
+      return isEnglish
+        ? "Password must contain at least one letter."
+        : "Şifre en az bir harf içermelidir.";
     }
     if (!hasSpecialChar.test(password)) {
-      return "Şifre en az bir özel karakter içermelidir.";
+      return isEnglish
+        ? "Password must contain at least one special character."
+        : "Şifre en az bir özel karakter içermelidir.";
     }
     return null;
   };
 
   const handleRegister = () => {
     if (!fullName || !phoneNumber || !email || !password) {
-      setErrorMessage("Lütfen tüm alanları doldurunuz.");
+      setErrorMessage(
+        isEnglish
+          ? "Please make sure all fields are filled."
+          : "Lütfen tüm alanları doldurduğunuzdan emin olun."
+      );
       Toast.show({
         type: "error",
         position: "top",
-        text1: "Kayıt Başarısız",
-        text2: "Lütfen tüm alanları doldurduğunuzdan emin olun.",
+        text1: isEnglish ? "Registration Failed" : "Kayıt Başarısız",
+        text2: isEnglish
+          ? "Please make sure all fields are filled."
+          : "Lütfen tüm alanları doldurduğunuzdan emin olun.",
         visibilityTime: 4000,
       });
       return;
@@ -74,7 +91,7 @@ const RegisterPage = () => {
       Toast.show({
         type: "error",
         position: "top",
-        text1: "Şifre Hatası",
+        text1: isEnglish ? "Password Error" : "Şifre Hatası",
         text2: passwordError,
         visibilityTime: 4000,
       });
@@ -89,52 +106,59 @@ const RegisterPage = () => {
     return <Loading />;
   }
 
+  const handleLanguageToggle = () => {
+    setIsEnglish((prev) => !prev);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        {/* <Toast /> */}
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <View style={styles.title}>
+            <View style={styles.header}>
+              <Pressable style={styles.languageToggle} onPress={handleLanguageToggle}>
+                <Text style={styles.languageText}>{isEnglish ? "TR" : "EN"}</Text>
+              </Pressable>
+              <View style={styles.title}>
               <Image
-                source={require("../../assets/barbaros.jpg")}
+                source={require("../../assets/barbotranlogo.png")}
                 style={styles.logo}
               />
+              </View>
             </View>
-
             <View style={styles.textInputContainer}>
               <CustomTextInput
-                title="İsim"
+                title={isEnglish ? "Full Name" : "İsim"}
                 isSecureText={false}
                 handleOnchangeText={(name) => setFullName(name)}
                 handleValue={fullName}
-                handlePlaceholder="İsminizi Giriniz"
+                handlePlaceholder={isEnglish ? "Enter your full name" : "İsminizi Giriniz"}
               />
               <CustomTextInput
-                title="Telefon"
+                title={isEnglish ? "Phone Number" : "Telefon"}
                 isSecureText={false}
                 handleOnchangeText={(phoneNumber) =>
                   setPhoneNumber(phoneNumber)
                 }
                 handleValue={phoneNumber}
-                handlePlaceholder="Telefon Numaranızı Giriniz"
+                handlePlaceholder={isEnglish ? "Enter your phone number" : "Telefon Numaranızı Giriniz"}
               />
               <CustomTextInput
-                title="Email"
+                title={isEnglish ? "Email" : "Email"}
                 isSecureText={false}
                 handleOnchangeText={(email) => setEmail(email)}
                 handleValue={email}
-                handlePlaceholder="E-Posta Adresinizi Giriniz"
+                handlePlaceholder={isEnglish ? "Enter your email address" : "E-Posta Adresinizi Giriniz"}
               />
               <CustomTextInput
-                title="Şifre"
+                title={isEnglish ? "Password" : "Şifre"}
                 isSecureText={true}
                 handleOnchangeText={(password) => setPassword(password)}
                 handleValue={password}
-                handlePlaceholder="Bir Şifre Belirleyin"
+                handlePlaceholder={isEnglish ? "Choose password" : "Şifre Belirleyin"}
               />
             </View>
             {errorMessage ? (
@@ -143,7 +167,7 @@ const RegisterPage = () => {
             <View style={styles.signupOptions}>
               <CustomButton
                 handlePressButton={handleRegister}
-                title="Kayıt Ol"
+                title={isEnglish ? "Register" : "Kayıt Ol"}
                 setWidth="80%"
                 setHeight={40}
                 handleBackgroundColor={"#0a78ca"}
@@ -151,8 +175,10 @@ const RegisterPage = () => {
               />
               <Pressable onPress={() => navigation.navigate("Login")}>
                 <Text>
-                  Zaten bir hesabınız var mı?
-                  <Text style={{ fontWeight: "bold" }}> Giriş Yapın</Text>
+                  {isEnglish ? "Already have an account?" : "Zaten bir hesabınız var mı?"}
+                  <Text style={{ fontWeight: "bold", color: "#0a78ca" }}>
+                    {isEnglish ? " Log In" : " Giriş Yapın"}
+                  </Text>
                 </Text>
               </Pressable>
             </View>
@@ -162,8 +188,6 @@ const RegisterPage = () => {
     </TouchableWithoutFeedback>
   );
 };
-
-export default RegisterPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -185,11 +209,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 20,
   },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    marginBottom: 30,
+  },
+  languageToggle: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    padding: 10,
+    backgroundColor: "#e0e0e0",
+    borderRadius: 5,
+    elevation: 3,
+  },
+  languageText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
   title: {
     alignItems: "center",
   },
   logo: {
-    marginVertical: 20,
+    width: 180,
+    height: 180,
+    resizeMode: "contain",
   },
   textInputContainer: {
     flex: 3,
@@ -205,3 +252,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 });
+
+export default RegisterPage;

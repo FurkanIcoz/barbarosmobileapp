@@ -9,6 +9,7 @@ import {
   Modal,
   TouchableOpacity,
   Image,
+  StatusBar,
 } from "react-native";
 import { Camera, CameraView, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
@@ -107,6 +108,7 @@ const QRScannerPage = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar hidden={true}/>
       <CameraView
         style={styles.camera}
         barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
@@ -188,19 +190,20 @@ const QRScannerPage = () => {
                 navigation.goBack();
               }}
             >
-              <Ionicons name="close" size={38} color="white" />
+              <Ionicons name="close" size={38} color="black" />
             </TouchableOpacity>
 
             <View style={styles.circle}>
               <Image
-                style={styles.topRoundButton}
-                source={require("../../assets/barbaros.jpg")}
+                style={styles.logo}
+                source={require("../../assets/barbotranlogo.png")}
               />
               <Text style={styles.modalText}>Fiyatlandırma</Text>
               <Text style={styles.pricingText}>Baslangıç: 0.99₺</Text>
               <Text style={styles.pricingText}>Dakika: 0.99₺</Text>
               <Text style={styles.modalText}>Şarj Durumu</Text>
               <Text style={styles.pricingText}>{scanData?.data?.battery_level || 0}%</Text>
+
               </View>
             <TouchableOpacity
               style={styles.startButton}
@@ -208,6 +211,10 @@ const QRScannerPage = () => {
             >
               <Text style={styles.textStyle}>Sürüşe Başla</Text>
             </TouchableOpacity>
+            <Text style={{ fontSize: 14,color: "#250a0a",paddingTop:30,fontWeight:"500"}}>Otomatik yükleme özelliğini aktifleştiriniz!</Text>
+            <Text style={{ fontSize: 14,color: "#250a0a",paddingTop:10,fontWeight:"500"}}>Güvenlik önlemlerinizi alınız.</Text>
+            <Text style={{ fontSize: 14,color: "#250a0a",paddingTop:10,fontWeight:"500"}}>İyi sürüşler dileriz.</Text>
+
           </View>
         </View>
       </Modal>
@@ -282,9 +289,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 1)",
   },
   modalView: {
-    width: "85%",
-    height: "79%",
-    backgroundColor: "rgba(199, 230, 245, 0.8)",
+    width: "90%",
+    height: "85%",
+    backgroundColor: "#f0e5e5",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
@@ -298,9 +305,11 @@ const styles = StyleSheet.create({
     width: 300,
     height: 480,
     borderRadius: 50,
-    backgroundColor: "white",
-    justifyContent: "center",
+    backgroundColor: "#f0e5e5",
+    justifyContent: "space-evenly",
     alignItems: "center",
+    borderWidth:0,
+    
   },
   modalText: {
     color: "black",
@@ -315,14 +324,12 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   startButton: {
-    position: "absolute",
-    bottom: 160,
-    //marginTop: 125,
+   
+    marginTop:50,
     backgroundColor: "#2196f3",
-    padding: 10,
     borderRadius: 10,
     width: 240,
-    height: 60,
+    height: 55,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -332,21 +339,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 26,
   },
-  topRoundButton: {
-    position: "absolute",
-    top: 50,
-    width: "90%",
-    height: 50,
-    borderRadius: 30,
-    backgroundColor: "rgba(10, 120, 192, 0.1)",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    opacity: 1,
+  logo: {
+    marginBottom:30,
+    width: 180,
+    height: 180,
+    bottom:40,
+    resizeMode: "contain",
   },
   // modalButtons: {
   //   flexDirection: "row",

@@ -35,18 +35,19 @@ const ContactUsPage = () => {
           numberOfLines={5}
         />
 
+       
+        <View style={styles.contactInfo}>
         <CustomButton
           handlePressButton={handleSubmit}
           title={"Kaydet ve Gönder"}
-          setWidth={"75%"}
-          setHeight={50}
+          setWidth={"80%"}
+          setHeight={45}
           handleBackgroundColor={"#0a78ca"}
           handlePressedBackgroundColor={"#b3cde0"}
         />
-        <View style={styles.contactInfo}>
-          <Text style={styles.infoHeader}>İletişim Bilgileri</Text>
+          {/* <Text style={styles.infoHeader}>İletişim Bilgileri</Text>
           <Text style={styles.infoText}>Telefon: +90 505 50 05</Text>
-          <Text style={styles.infoText}>E-posta: info@barbaros.com</Text>
+          <Text style={styles.infoText}>E-posta: info@barbaros.com</Text> */}
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -58,7 +59,8 @@ export default ContactUsPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-around",
+    padding:10,
+    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#fff",
   },
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
   contactInfo: {
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 20,
     borderRadius: 5,
     width: "100%",
   },
@@ -100,4 +102,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
+
 });

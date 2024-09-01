@@ -86,8 +86,8 @@ const DrivingPage = () => {
     }, 1000);
 
     const dollarInterval = setInterval(() => {
-      setDollarAmount((prevAmount) => prevAmount + 2);
-    }, 1000);
+      setDollarAmount((prevAmount) => prevAmount + 3);
+    }, 10000);
 
     return () => {
       clearInterval(interval);
